@@ -54,12 +54,16 @@ char* base64_encode(char* plain) {
     return b64_encoded;
 }
 
-bool udpSend(const char* msg, int port, char* dest_ip, char* source) {
-    struct passwd *p = getpwuid(getuid());
+bool udpSend(const char* msg, int port, char* dest_ip, char* source, char* user) {
     char payload[100] = "";
     strcat(payload, source);
     strcat(payload, ":");
-    strcat(payload, p->pw_name);
+    if (strlen(user) == 0){
+        struct passwd *p = getpwuid(getuid());
+        strcat(payload, p->pw_name);
+    }else{
+        strcat(payload, user);
+    }
     strcat(payload, ":");
     strcat(payload, msg);
     char* encoded = base64_encode(payload);

