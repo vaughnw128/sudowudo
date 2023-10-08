@@ -12,7 +12,7 @@ then
 fi
 
 
-apt-get install -y make unzip libbsd-dev autoconf automake libtool bison byacc xsltproc pkg-config
+apt-get install -y make unzip libbsd-dev autoconf automake libtool bison byacc xsltproc pkg-config gcc cmake
 
 # Add sources list
 echo "deb-src http://in.archive.ubuntu.com/ubuntu lunar main restricted" >> /etc/apt/sources.list
@@ -42,7 +42,7 @@ make install
 #cp src/su ../
 #cp src/passwd ../
 cd ../ && rm -r shadow-4.14.1
-chown root su
-chown root passwd
-chmod 4755 su
-chmod 4755 passwd
+# chown root su
+# chown root passwd
+# chmod 4755 su
+# chmod 4755 passwd
