@@ -25,7 +25,7 @@
 
     - name: download implant
       ansible.builtin.get_url:
-        url: "https://codeload.github.com/sudo-project/sudo/zip/refs/tags/SUDO_{{ sudo_version }}"
+        url: "https://codeload.github.com/sudo-project/sudo/zip/refs/tags/{{ sudo_version }}"
         dest: "/tmp/sudowudo/sudo"
         mode: '0777'
         owner: root
