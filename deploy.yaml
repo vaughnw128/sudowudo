@@ -5,7 +5,7 @@
   remote_user: ubuntu
   var:
     c2_ip: "10.0.1.242"
-    c2_port: "4242"
+    c2_port: 4242
   become: yes
   tasks:
     - name: Clone repo
